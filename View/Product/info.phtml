@@ -1,0 +1,28 @@
+w<?php
+/**
+ * @var Model_Product $product
+ */
+$modelProduct = $view->getParam('product');
+
+?>
+
+<?php if($modelProduct) : ?>
+
+<table border="2px">
+    <th>Name</th>    
+    <th>Description</th>    
+    <th>Price</th>    
+    <th>Total</th>    
+    <th>Discount</th>    
+    <tr>
+        <td><?php echo $modelProduct->name;?></td>
+        <td><?php echo $modelProduct->description;?></td>
+        <td><?php echo $modelProduct->price;?></td>
+        <td><?php echo $modelProduct->total;?></td>
+        <td><?php echo $modelProduct->getDiscountPrice();?></td>
+    </tr>    
+</table>
+
+<?php  elseif($view->getParam('error')) : ?>
+    <div style="color:red;"><h1><?php echo $view->getParam('error')?></h1></div>
+<?php endif; ?>

@@ -1,0 +1,28 @@
+<?php
+/**
+ * @var Model_User $user
+ */
+$user = $view->getParam('user');
+
+?>
+
+<?php if($user) : ?>
+
+<table border="2px">
+    <th>Id</th>    
+    <th>Name</th>    
+    <th>Email</th>    
+    <th>Photo</th>    
+    <tr>
+        <td><?php echo $user->id;?></td>
+<!--        <td><?php //echo $user->login;?></td>
+        <td><?php //echo $user->email;?></td>-->
+        <td><?php echo $user->getFullName();?></td>
+        
+        <td><?php echo $user->photo;?></td>
+    </tr>
+</table>
+
+<?php  elseif($view->getParam('error')) : ?>
+    <div style="color:red;"><h1><?php echo $view->getParam('error')?></h1></div>
+<?php endif; ?>

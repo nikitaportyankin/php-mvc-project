@@ -1,0 +1,30 @@
+<?php
+/**
+ * @var array of Model_Product $products
+ */
+$products = $view->getParam('products');
+
+?>
+
+<table border="2px">
+    <?php if(!empty($products)) : ?>
+    <th>Name</th>    
+    <th>Description</th>    
+    <th>Price</th>    
+    <th>Total</th>    
+    <th>Discount</th>    
+    <?php foreach ($products as $modelProduct) : ?>
+    <?php /** @var Model_Product $modelProduct */?>
+    <tr>
+        <td><?php echo $modelProduct->getProductLink();?></td>
+        <td><?php echo $modelProduct->description;?></td>
+        <td><?php echo $modelProduct->price;?></td>
+        <td><?php echo $modelProduct->total;?></td>
+        <td><?php echo $modelProduct->getDiscountPrice();?></td>
+    </tr>
+    <?php endforeach;?>
+</table>
+
+<?php  elseif($view->getParam('error')) : ?>
+    <div style="color:red;"><h1><?php echo $view->getParam('error')?></h1></div>
+<?php endif; ?>

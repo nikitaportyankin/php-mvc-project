@@ -1,0 +1,88 @@
+<?php 
+    $userId = $controller->getUserId();
+          
+    $userRoleId = 0;
+    if($userId) {
+        $userModel      = Model_User::getById($userId);
+        $userEmail      = $userModel->email;
+        $userRoleId     = $userModel->role_id; 
+    }
+
+    $errorType = $controller->getParamByKey('error');
+    $errorMessage = '';
+    if(!empty($errorType)) {
+        switch($errorType) {
+            case System_Exception::ALREADY_EXIST:
+                $errorMessage = 'Such account already exists!';
+                break;
+            case System_Exception::VALIDATE_ERROR:
+                $errorMessage = 'Invalid enetered data!';
+                break;
+            case System_Exception::ERROR_CREATE_USER:
+                $errorMessage = 'Can\'t create new user! Try again!';
+                break;
+            case System_Exception::INVALID_LOGIN:
+                $errorMessage = 'Invalid user or password!';
+                break;    
+        }
+    } 
+?>
+<html>
+    <head>
+        <script type="text/javascript" src="/js/jquery.js"></script>
+        <script type="text/javascript" src="/js/authorize.js"></script>
+    </head>    
+    <body>    
+        <div id="error" style="width:200px; margin:0 auto; color:red"><?php echo !empty($errorMessage) ? $errorMessage : ''; ?></div>
+
+        <div id="userEmail" style="width:300px; margin-left:70%"><?php echo !empty($userId) ? 'Вы зашли как: ' : '';?><a href="<?php echo !empty($userId)? '/user/profile/id/'.$userId : '';?>"><?php echo !empty($userEmail) ? $userEmail : ''; ?></a></div>
+        <div id="userId" style="width:100px; margin-left:80%"><a id="logout" href="#"><?php echo !empty($userId) ? 'Exit' : ''?></a></div>    
+
+        <div style="width:200px; margin-left: 80%; <?php if(!empty($userEmail)) { echo 'display: none;'; } ?>" id="loginFormDiv">
+            <form name="autorize" id="loginForm" method="POST" autocomplete="off">
+                <input placeholder="Login" type="text" name="email" maxlength="20" /><br />
+                <input placeholder="Password" type="password" name="password" maxlength="30" /><br />
+                <input id="save_checkbox" type="checkbox" name="save" value="1" /><label for="save_checkbox">Save</label><br />
+                <input type="submit" name="login" value="Enter" />
+                <input type="submit" name="register" value="Register" />
+            </form>
+        </div>
+
+        <?php if( (!empty($userRoleId) && $userRoleId != Model_User::ROLE_ADMIN_ID) || empty($userRoleId) ) : ?>
+            
+            <div id="menu">
+                <a href="/">Главная </a> &nbsp&nbsp | &nbsp&nbsp
+                <a href="/product/index">Продукты </a>  &nbsp&nbsp | &nbsp&nbsp
+                <a href="/company/portfolio">Портфолио </a>  &nbsp&nbsp | &nbsp&nbsp
+                <a href="/company/about">О компании </a>  &nbsp&nbsp | &nbsp&nbsp
+                <a href="/company/contact">Контакты </a>  &nbsp&nbsp | &nbsp&nbsp
+                <?php if ($userRoleId == Model_User::ROLE_ADMIN_ID) : ?>
+                    <a id="admin_href" href="/admin/index" style="<?php if($userRoleId != Model_User::ROLE_ADMIN_ID) { echo 'display: none;'; } ?>">Админка </a>  &nbsp&nbsp
+                <?php endif; ?>
+            </div>
+        
+        <?php else : ?>
+        
+            <div id="admin_menu">
+                <a href="/customer/index">Клиенты </a> &nbsp&nbsp | &nbsp&nbsp
+                <a href="/product/index">Продукты </a>  &nbsp&nbsp | &nbsp&nbsp
+                <a href="/order/index">Заказы </a>  &nbsp&nbsp
+            </div>
+        
+        <?php endif; ?>
+        <?php 
+        $scriptFile = 'js' . '/' . $viewFolder . '/' . $actionName. '.js';
+        if(file_exists($scriptFile)): ?>
+            <script src="<?php  echo '/' . $scriptFile; ?>"></script>
+        <?php endif; ?>
+        <br />
+        <hr />
+
+    <?php
+        if(file_exists($viewFileName)) {
+            include $viewFileName;
+        }
+    ?>
+    </body>
+    
+</html>
